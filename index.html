@@ -1,419 +1,262 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>一周爱心菜谱 | 给最爱的你</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff5f9;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            text-align: center;
-            padding: 2rem 1rem;
-            background: linear-gradient(to right, #ffccdd, #ffe4ec);
-            border-bottom: 2px solid #ffb6c1;
-        }
-
-        header h1 {
-            font-size: 2rem;
-            color: #e91e63;
-            margin: 0;
-        }
-
-        header p {
-            font-size: 1rem;
-            color: #777;
-        }
-
-        .day {
-            background-color: #fff;
-            margin: 1rem auto;
-            max-width: 600px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-            transition: transform 0.2s ease;
-        }
-
-        .day:hover {
-            transform: scale(1.02);
-        }
-
-        .day-title {
-            background-color: #ffb6c1;
-            color: white;
-            padding: 1rem;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .dish {
-            margin-top: 1rem;
-            border-top: 1px solid #eee;
-            padding: 1rem;
-        }
-
-        .image {
-            width: 40%;
-            height: 240px;
-            object-fit: cover;
-            margin-top: 0.5rem;
-            border-radius: 8px;
-			display: block;
-        }
-
-        .ingredients, .steps {
-            margin-top: 0.5rem;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 1rem;
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>一周爱心菜谱 | 给最爱的你</title>
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Roboto', 'ZCOOL KuaiLe', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(120deg, #fff5f9 0%, #ffe4ec 100%); margin: 0; padding-bottom: 5rem; /* 为购物车按钮留出空间 */ }
+    .header { text-align: center; padding: 2.5rem 1rem 1.5rem 1rem; background: linear-gradient(to right, #ffccdd, #ffe4ec); border-bottom: 2px solid #ffb6c1; position: relative; }
+    .header h1 { color: #e91e63; margin: 0; font-family: 'ZCOOL KuaiLe', cursive; font-size: 2.5rem; letter-spacing: 2px; }
+    .header p { color: #b96b8e; font-size: 1.1rem; margin-top: 0.5rem; }
+    .category-filters { text-align: center; margin: 1.5rem 0; }
+    .cat-btn { background: #fff; color: #e91e63; border: 1.5px solid #ffe4ec; border-radius: 8px; font-size: 1.08rem; padding: 0.5em 1.5em; margin: 0 0.5em 0.5em 0.5em; cursor: pointer; box-shadow: 0 2px 8px #ffe4ec33; transition: background .18s, color .18s; }
+    .cat-btn.active, .cat-btn:hover { background: #ffe4ec; color: #b96b8e; }
+    .dish-grid { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; margin: 2.5rem 0; padding: 0 1rem; }
+    .dish-card { width: 230px; background: #fff; border-radius: 18px; box-shadow: 0 8px 32px rgba(233,30,99,0.08); overflow: hidden; transition: transform .18s, box-shadow .18s; border: 1.5px solid #ffe4ec; display: flex; flex-direction: column; }
+    .dish-card:hover { transform: translateY(-6px) scale(1.04); box-shadow: 0 16px 40px rgba(233,30,99,0.18); }
+    .dish-card img { width: 100%; height: 150px; object-fit: cover; cursor: pointer; }
+    .dish-name { text-align: center; padding: 12px 8px 8px 8px; font-weight: bold; color: #e91e63; font-size: 1.18rem; letter-spacing: 1px; font-family: 'ZCOOL KuaiLe', cursive; cursor: pointer; flex-grow: 1; }
+    .add-to-cart-btn { background-color: #e91e63; color: white; border: none; padding: 10px; text-align: center; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s; margin: 0 12px 12px 12px; border-radius: 8px; }
+    .add-to-cart-btn:hover { background-color: #c2185b; }
+    .footer { text-align: center; padding: 1.5rem 0 1rem 0; font-size: 1rem; color: #b96b8e; letter-spacing: 1px; }
+    .modal { display: none; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(233,30,99,0.10); align-items: center; justify-content: center; z-index: 1000; }
+    .modal.active { display: flex; }
+    .modal-content { background: #fff; border-radius: 22px; max-width: 96vw; width: 500px; max-height: 92vh; overflow-y: auto; padding: 2.5rem 2rem 2rem 2rem; box-shadow: 0 12px 48px rgba(233,30,99,0.18); position: relative; border: 2px solid #ffe4ec; }
+    .modal-content img.dish-detail-img { width: 100%; max-width: 340px; display: block; margin: 0 auto 1.2rem auto; border-radius: 10px; box-shadow: 0 4px 16px #ffe4ec; }
+    .close-btn { position: absolute; right: 2rem; top: 1.5rem; font-size: 2.2rem; color: #e91e63; cursor: pointer; font-weight: bold; transition: color .2s; }
+    .close-btn:hover { color: #b96b8e; }
+    .modal-content h2 { font-family: 'ZCOOL KuaiLe', cursive; color: #e91e63; margin-bottom: 0.6rem; font-size: 2rem; letter-spacing: 1px; text-align: center; }
+    .modal-content .ingredients { font-size: 1.08rem; color: #b96b8e; margin-bottom: 1.1rem; background: #fff5f9; border-radius: 8px; padding: 0.7rem 1rem; border-left: 4px solid #e91e63; }
+    .modal-content ol { margin: 0; padding-left: 1.2em; }
+    .modal-content ol li { font-size: 1.13rem; color: #444; margin-bottom: 0.7em; line-height: 1.8; font-family: 'Roboto', 'ZCOOL KuaiLe', sans-serif; background: linear-gradient(90deg,#ffe4ec 0,#fff 100%); border-radius: 6px; padding: 0.4em 0.8em; box-shadow: 0 2px 8px #ffe4ec33; transition: background .2s; }
+    .modal-content ol li:hover { background: #ffe4ec; color: #e91e63; }
+    .cart-icon { position: fixed; bottom: 20px; right: 20px; background-color: #e91e63; color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1001; }
+    .cart-icon .cart-count { position: absolute; top: -5px; right: -5px; background-color: #c2185b; color: white; border-radius: 50%; font-size: 0.8rem; padding: 3px 6px; }
+    .cart-modal { display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 999; }
+    .cart-modal.active { display: flex; align-items: center; justify-content: center; }
+    .cart-modal-content { background: #fff; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+    .cart-modal-content h3 { text-align: center; color: #e91e63; font-family: 'ZCOOL KuaiLe', cursive; margin-top: 0; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item-name { flex-grow: 1; color: #555; }
+    .cart-item-remove { color: #e91e63; cursor: pointer; margin-left: 10px; font-weight: bold; }
+    .cart-total { text-align: right; margin-top: 15px; font-weight: bold; color: #e91e63; }
+    .empty-cart-msg { text-align: center; color: #aaa; padding: 20px 0; }
+    @media (max-width: 700px) { 
+      .dish-card { width: calc(50% - 16px); } 
+      .modal-content { padding: 1.5rem 1rem; width: 90vw; }
+      .modal-content img.dish-detail-img { max-width: 80vw; }
+      .close-btn { right: 1rem; top: 1rem; }
+    }
+    @media (max-width: 480px) { 
+      .dish-card { width: calc(100% - 16px); }
+    }
+  </style>
 </head>
 <body>
-
-<header>
+  <div class="header">
     <h1>一周爱心菜谱</h1>
     <p>每天为你做两顿饭，是我想表达的小浪漫💖</p>
-</header>
+  </div>
 
-<!-- 周一 -->
-<div class="day">
-    <div class="day-title">周一：辣椒炒肉 + 清炒空心菜</div>
+  <div class="category-filters">
+    <button class="cat-btn active" data-category="全部">全部</button>
+    <button class="cat-btn" data-category="肉类">肉类</button>
+    <button class="cat-btn" data-category="菜类">菜类</button>
+  </div>
 
-    <!-- 辣椒炒肉 -->
-    <div class="dish">
-        <strong>辣椒炒肉</strong>
-        <img src="ljcr.jpg" alt="辣椒炒肉" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            猪里脊肉/五花肉 200g<br>
-            青椒（或红椒）2个（约150g）<br>
-            大蒜 3瓣 / 生姜 2片<br>
-            <strong>调料类：</strong><br>
-            生抽 1.5汤匙 / 老抽 半汤匙<br>
-            料酒 1汤匙 / 盐 适量 / 白糖 少许 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 猪肉洗净切薄片，加入生抽、料酒腌制10分钟。<br>
-            2. 青椒去籽切条，大蒜剁末。<br>
-            3. 热锅凉油，放入姜片、蒜末爆香。<br>
-            4. 放入肉片中火翻炒至变色后盛出备用。<br>
-            5. 锅中留底油，放入青椒快炒1分钟，加少许水焖半分钟。<br>
-            6. 倒回肉片一起翻炒均匀。<br>
-            7. 加老抽调色，加盐、少许白糖提鲜，翻炒几下即可出锅。
-        </div>
+  <div class="dish-grid" id="dishGrid"></div>
+
+  <div class="footer">&copy; 2025 用心做的每一餐，都是对你的喜欢 💖</div>
+
+  <!-- 菜品详情 Modal -->
+  <div class="modal" id="dishDetailModal">
+    <div class="modal-content" id="dishDetailModalContent">
+      <!-- 动态填充 -->
     </div>
+  </div>
 
-    <!-- 清炒空心菜 -->
-    <div class="dish">
-        <strong>清炒空心菜</strong>
-        <img src="kxc.png" alt="清炒空心菜" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            空心菜 300g
-            <strong>调料类：</strong><br>
-            蒜末 适量 / 盐 适量 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 空心菜洗净沥干水分。<br>
-            2. 热锅加油，爆香蒜末。<br>
-            3. 放入空心菜快速翻炒，加盐调味即可。
-        </div>
+  <!-- 购物车图标 -->
+  <div class="cart-icon" id="cartIcon">
+    🛒
+    <span class="cart-count" id="cartCount">0</span>
+  </div>
+
+  <!-- 购物车 Modal -->
+  <div class="cart-modal" id="cartModal">
+    <div class="cart-modal-content">
+      <span class="close-btn" id="closeCartModalBtn" style="top:10px; right:15px; font-size:1.8rem;">&times;</span>
+      <h3>我的购物车</h3>
+      <div id="cartItemsContainer">
+        <!-- 购物车项目将在这里 -->
+      </div>
+      <div class="cart-total" id="cartTotal">总计: 0 道菜</div>
     </div>
-</div>
+  </div>
 
-<!-- 周二 -->
-<div class="day">
-    <div class="day-title">周二：豆芽炒肉 + 蒜蓉西兰花</div>
+  <script>
+    const dishes = [
+      { id: 1, name: '辣椒炒肉', img: 'ljcr.jpg', category: '肉类', ingredients: '猪里脊肉/五花肉 200g，青椒2个，大蒜3瓣，生姜2片，生抽1.5汤匙，老抽半汤匙，料酒1汤匙，盐适量，白糖少许，食用油适量', steps: ['猪肉洗净切薄片，加入生抽、料酒腌制10分钟。','青椒去籽切条，大蒜剁末。','热锅凉油，放入姜片、蒜末爆香。','放入肉片中火翻炒至变色后盛出备用。','锅中留底油，放入青椒快炒1分钟，加少许水焖半分钟。','倒回肉片一起翻炒均匀。','加老抽调色，加盐、少许白糖提鲜，翻炒几下即可出锅。'] },
+      { id: 2, name: '清炒空心菜', img: 'kxc.png', category: '菜类', ingredients: '空心菜 300g，蒜末适量，盐适量，食用油适量', steps: ['空心菜洗净沥干水分。','热锅加油，爆香蒜末。','放入空心菜快速翻炒，加盐调味即可。'] },
+      { id: 3, name: '豆芽炒肉', img: 'dycr.jpg', category: '肉类', ingredients: '猪瘦肉 200g，黄豆芽 200g，胡萝卜丝 50g（可选），蒜末2瓣，生抽1.5汤匙，料酒1汤匙，淀粉1茶匙，盐适量，食用油适量', steps: ['瘦肉切丝，加入生抽、料酒、淀粉拌匀腌制10分钟。','黄豆芽洗净，胡萝卜切细丝。','热锅加油，先炒肉丝至变色盛出备用。','另起锅放油，爆香蒜末，加入豆芽和胡萝卜丝快炒。','倒入炒好的肉丝翻炒均匀即可。'] },
+      { id: 4, name: '蒜蓉西兰花', img: 'syxlh.png', category: '菜类', ingredients: '西兰花 1颗（约300g），蒜末3瓣，蚝油1汤匙，盐适量，食用油适量', steps: ['西兰花切成小朵，焯水1分钟后捞出。','热锅加油，爆香蒜末。','放入西兰花翻炒，加蚝油调味即可。'] },
+      { id: 5, name: '酸汤肥牛', img: 'stfn.jpg', category: '肉类', ingredients: '肥牛卷300g，金针菇100g，豆芽100g，泡椒/野山椒5根，干辣椒5个，蒜末3瓣，葱花适量，姜片3片，番茄酱2汤匙，盐适量，白胡椒粉少许，鸡精少许', steps: ['所有食材准备好：泡椒剪段，金针菇撕开洗净，豆芽洗净。','锅中加水烧开，放入姜片、泡椒煮3分钟出味。','加入番茄酱搅拌均匀，继续煮2分钟。','先放入金针菇煮1分钟，再放豆芽煮1分钟。','分次放入肥牛卷，烫熟即可（不宜久煮）。'] },
+      { id: 6, name: '酸辣土豆丝', img: 'sltds.jpg', category: '菜类', ingredients: '土豆2个（约300g），干辣椒5个，蒜末2瓣，醋1汤匙，盐适量，食用油适量', steps: ['土豆去皮切丝，清水冲洗掉淀粉，控干水分。','干辣椒剪段，蒜剁末，热锅加油爆香。','放入土豆丝大火快炒1~2分钟。','加醋、盐调味即可。'] },
+      { id: 7, name: '白灼虾', img: 'bzx.jpeg', category: '肉类', ingredients: '鲜虾300g，姜片3片，葱段2根，蒜末2瓣，葱花少许，料酒1汤匙，生抽适量，醋适量，盐适量', steps: ['虾剪须、去虾线，清洗干净。','锅中加水，放入姜片、葱段、料酒，大火烧开。','放入虾煮约2分钟，虾身变红立即捞出。','搭配蘸料：蒜末+生抽+醋调汁，即可食用。'] },
+      { id: 8, name: '辛辣鸡蛋炒青椒', img: 'qjcjd.png', category: '菜类', ingredients: '鸡蛋3个，青椒2个（约150g），盐适量，食用油适量', steps: ['鸡蛋打散，加少许盐。','青椒洗净切丝。','热锅加油，倒入鸡蛋液炒至半凝固状态盛出。','再起锅加油，放入青椒炒至断生，倒入鸡蛋翻炒均匀，加盐调味，撒葱花即可。'] },
+      { id: 9, name: '回锅肉', img: 'hgr.jpg', category: '肉类', ingredients: '带皮五花肉300g，青蒜苗100g，姜片3片，葱段1根，郫县豆瓣酱1.5汤匙，甜面酱0.5汤匙，料酒1汤匙，糖少许，盐适量，食用油适量', steps: ['五花肉冷水下锅，加姜、葱、料酒煮至七八成熟，捞出晾凉切片。','热锅不放油，放入肉片煸炒出油脂。','加入姜片、豆瓣酱炒香。','加甜面酱、糖炒匀。','加入青蒜苗翻炒至断生即可。'] },
+      { id: 10, name: '西红柿炒鸡蛋', img: 'xhscjd.jpeg', category: '菜类', ingredients: '西红柿2个（约250g），鸡蛋3个，盐适量，糖少许，食用油适量', steps: ['鸡蛋加盐打散，热锅加油炒至凝固盛出。','西红柿切块，热锅加油炒出沙。','倒入鸡蛋一起翻炒，加盐、少许糖调味即可。'] },
+      { id: 11, name: '辣子鸡丁', img: 'lzjj.webp', category: '肉类', ingredients: '鸡胸肉/鸡腿肉250g，干辣椒8个，花椒10粒，葱姜蒜适量，生抽1.5汤匙，料酒1汤匙，淀粉1茶匙，盐适量，糖少许，食用油适量', steps: ['鸡肉切丁，加生抽、料酒、淀粉腌制10分钟。','热锅加油，放入鸡丁炸至表面微黄捞出。','锅中留底油，放入干辣椒、花椒、葱姜蒜炒香。','加入鸡丁翻炒，调入盐、少许糖即可。'] },
+      { id: 12, name: '手撕包菜', img: 'ssbc.jpeg', category: '菜类', ingredients: '包菜半个（约300g），干辣椒3个，蒜末3瓣，盐适量，生抽少许，醋少许，食用油适量', steps: ['包菜手撕成小块，洗净沥干。','干辣椒剪段，蒜剁末。','热锅加油，先爆香干辣椒和蒜末。','放入包菜大火翻炒1~2分钟。','加盐、生抽、少许醋调味，炒匀即可。'] },
+      { id: 13, name: '口蘑汤', img: 'kgt.png', category: '菜类', ingredients: '口蘑10朵（约200g），鸡蛋1个（可选），清水500ml，盐适量，鸡精少许，葱花少许，香油少许', steps: ['口蘑洗净切片，锅中加清水煮沸，放入口蘑煮3分钟。','打入鸡蛋搅匀（可选），加盐、鸡精调味，撒葱花，淋几滴香油即可。'] },
+      { id: 14, name: '凉拌手撕鸡', img: 'lbssj.png', category: '肉类', ingredients: '鸡胸肉/鸡腿肉200g，黄瓜丝50g，香菜适量，蒜末3瓣，小米辣1个，花生碎适量，生抽1.5汤匙，醋1汤匙，香油半汤匙，辣椒油1汤匙，糖少许，盐适量', steps: ['鸡肉冷水下锅，加姜片、料酒煮熟，放凉后撕成丝。','黄瓜切丝，香菜切段。','准备调料汁：蒜末、小米辣、生抽、醋、糖、香油、辣椒油混合。','鸡丝与黄瓜丝混合，淋上调料汁，撒花生碎和香菜即可。'] }
+    ];
 
-    <!-- 豆芽炒肉 -->
-    <div class="dish">
-        <strong>豆芽炒肉</strong>
-        <img src="dycr.jpg" alt="豆芽炒肉" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            猪瘦肉 200g<br>
-            黄豆芽 200g / 胡萝卜丝 50g（可选）<br>
-            蒜末 2瓣
-            <strong>调料类：</strong><br>
-            生抽 1.5汤匙 / 料酒 1汤匙 / 淀粉 1茶匙<br>
-            盐 适量 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 瘦肉切丝，加入生抽、料酒、淀粉拌匀腌制10分钟。<br>
-            2. 黄豆芽洗净，胡萝卜切细丝。<br>
-            3. 热锅加油，先炒肉丝至变色盛出备用。<br>
-            4. 另起锅放油，爆香蒜末，加入豆芽和胡萝卜丝快炒。<br>
-            5. 倒入炒好的肉丝翻炒均匀即可。
-        </div>
-    </div>
+    const dishGrid = document.getElementById('dishGrid');
+    const dishDetailModal = document.getElementById('dishDetailModal');
+    const dishDetailModalContent = document.getElementById('dishDetailModalContent');
+    const cartIcon = document.getElementById('cartIcon');
+    const cartCount = document.getElementById('cartCount');
+    const cartModal = document.getElementById('cartModal');
+    const cartItemsContainer = document.getElementById('cartItemsContainer');
+    const cartTotal = document.getElementById('cartTotal');
+    const closeCartModalBtn = document.getElementById('closeCartModalBtn');
+    const categoryBtns = document.querySelectorAll('.cat-btn');
 
-    <!-- 蒜蓉西兰花 -->
-    <div class="dish">
-        <strong>蒜蓉西兰花</strong>
-        <img src="syxlh.png" alt="蒜蓉西兰花" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            西兰花 1颗（约300g）<br>
-            蒜末 3瓣
-            <strong>调料类：</strong><br>
-            蚝油 1汤匙 / 盐 适量 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 西兰花切成小朵，焯水1分钟后捞出。<br>
-            2. 热锅加油，爆香蒜末。<br>
-            3. 放入西兰花翻炒，加蚝油调味即可。
-        </div>
-    </div>
-</div>
+    let cartItems = [];
+    let currentCategory = '全部';
 
-<!-- 周三 -->
-<div class="day">
-    <div class="day-title">周三：酸汤肥牛 + 酸辣土豆丝</div>
+    function findDishById(id) {
+      return dishes.find(dish => dish.id === id);
+    }
 
-    <!-- 酸汤肥牛 -->
-    <div class="dish">
-        <strong>酸汤肥牛</strong>
-        <img src="stfn.jpg" alt="酸汤肥牛" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            肥牛卷 300g<br>
-            金针菇 100g / 豆芽 100g<br>
-            泡椒/野山椒 5根 / 干辣椒 5个 / 蒜末 3瓣 / 葱花 适量<br>
-            姜片 3片<br>
-            <strong>调料类：</strong><br>
-            番茄酱 2汤匙 / 盐 适量 / 白胡椒粉 少许 / 鸡精 少许
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 所有食材准备好：泡椒剪段，金针菇撕开洗净，豆芽洗净。<br>
-            2. 锅中加水烧开，放入姜片、泡椒煮3分钟出味。<br>
-            3. 加入番茄酱搅拌均匀，继续煮2分钟。<br>
-            4. 先放入金针菇煮1分钟，再放豆芽煮1分钟。<br>
-            5. 分次放入肥牛卷，烫熟即可（不宜久煮）。
-        </div>
-    </div>
+    function renderDishes(category = '全部') {
+      dishGrid.innerHTML = '';
+      currentCategory = category;
+      const filteredDishes = category === '全部' ? dishes : dishes.filter(d => d.category === category);
+      
+      filteredDishes.forEach(dish => {
+        const card = document.createElement('div');
+        card.className = 'dish-card';
+        card.innerHTML = `
+          <img src="./${dish.img}" alt="${dish.name}">
+          <div class="dish-name">${dish.name}</div>
+          <button class="add-to-cart-btn" data-id="${dish.id}">加入购物车</button>
+        `;
+        card.querySelector('img').onclick = () => showDishModal(dish);
+        card.querySelector('.dish-name').onclick = () => showDishModal(dish);
+        card.querySelector('.add-to-cart-btn').onclick = (e) => {
+          e.stopPropagation(); // 防止点击按钮时触发卡片详情
+          addToCart(dish.id);
+        };
+        dishGrid.appendChild(card);
+      });
+    }
 
-    <!-- 酸辣土豆丝 -->
-    <div class="dish">
-        <strong>酸辣土豆丝</strong>
-        <img src="sltds.jpg" alt="酸辣土豆丝" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            土豆 2个（约300g）<br>
-            干辣椒 5个 / 蒜末 2瓣
-            <strong>调料类：</strong><br>
-            醋 1汤匙 / 盐 适量 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 土豆去皮切丝，清水冲洗掉淀粉，控干水分。<br>
-            2. 干辣椒剪段，蒜剁末，热锅加油爆香。<br>
-            3. 放入土豆丝大火快炒1~2分钟。<br>
-            4. 加醋、盐调味即可。
-        </div>
-    </div>
-</div>
+    function showDishModal(dish) {
+      dishDetailModalContent.innerHTML = `
+        <span class='close-btn' id='closeDishDetailModalBtn'>&times;</span>
+        <h2>${dish.name}</h2>
+        <img src='./${dish.img}' alt='${dish.name}' class='dish-detail-img'>
+        <div class='ingredients'><strong>配料：</strong>${dish.ingredients}</div>
+        <ol>${dish.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+        <button class="add-to-cart-btn" data-id="${dish.id}" style="width:100%; margin-top:1rem; padding:12px; font-size:1rem;">加入购物车</button>
+      `;
+      dishDetailModal.classList.add('active');
+      document.getElementById('closeDishDetailModalBtn').onclick = hideDishDetailModal;
+      dishDetailModalContent.querySelector('.add-to-cart-btn').onclick = () => {
+        addToCart(dish.id);
+        // 可以选择在这里关闭详情弹窗或给出提示
+        // hideDishDetailModal(); 
+        alert(`${dish.name} 已加入购物车!`);
+      };
+    }
 
-<!-- 周四 -->
-<div class="day">
-    <div class="day-title">周四：白灼虾 + 辛辣鸡蛋炒青椒</div>
+    function hideDishDetailModal() {
+      dishDetailModal.classList.remove('active');
+    }
 
-    <!-- 白灼虾 -->
-    <div class="dish">
-        <strong>白灼虾</strong>
-        <img src="bzx.jpeg" alt="白灼虾" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            鲜虾 300g<br>
-            姜片 3片 / 葱段 2根 / 蒜末 2瓣 / 葱花 少许
-            <strong>调料类：</strong><br>
-            料酒 1汤匙 / 生抽 适量 / 醋 适量 / 盐 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 虾剪须、去虾线，清洗干净。<br>
-            2. 锅中加水，放入姜片、葱段、料酒，大火烧开。<br>
-            3. 放入虾煮约2分钟，虾身变红立即捞出。<br>
-            4. 搭配蘸料：蒜末+生抽+醋调汁，即可食用。
-        </div>
-    </div>
+    dishDetailModal.onclick = function(e) { 
+      if (e.target === dishDetailModal) hideDishDetailModal(); 
+    };
 
-    <!-- 辛辣鸡蛋炒青椒 -->
-    <div class="dish">
-        <strong>辛辣鸡蛋炒青椒</strong>
-        <img src="qjcjd.png" alt="辛辣鸡蛋炒青椒" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            鸡蛋 3个 / 青椒 2个（约150g）
-            <strong>调料类：</strong><br>
-            盐 适量 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 鸡蛋打散，加少许盐。<br>
-            2. 青椒洗净切丝。<br>
-            3. 热锅加油，倒入鸡蛋液炒至半凝固状态盛出。<br>
-            4. 再起锅加油，放入青椒炒至断生，倒入鸡蛋翻炒均匀，加盐调味，撒葱花即可。
-        </div>
-    </div>
-</div>
+    function addToCart(dishId) {
+      const dish = findDishById(dishId);
+      if (dish) {
+        // 简单起见，我们允许多次添加同一菜品
+        cartItems.push(dish);
+        updateCartDisplay();
+        alert(`${dish.name} 已加入购物车!`);
+      } else {
+        console.error('菜品未找到: ', dishId);
+      }
+    }
 
-<!-- 周五 -->
-<div class="day">
-    <div class="day-title">周五：回锅肉 + 西红柿炒鸡蛋</div>
+    function removeFromCart(dishId) {
+        const indexToRemove = cartItems.findIndex(item => item.id === dishId);
+        if (indexToRemove > -1) {
+            cartItems.splice(indexToRemove, 1); // 只移除一个匹配项
+            updateCartDisplay();
+        }
+    }
 
-    <!-- 回锅肉 -->
-    <div class="dish">
-        <strong>回锅肉</strong>
-        <img src="hgr.jpg" alt="回锅肉" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            带皮五花肉 300g / 青蒜苗 100g<br>
-            姜片 3片 / 葱段 1根
-            <strong>调料类：</strong><br>
-            郫县豆瓣酱 1.5汤匙 / 甜面酱 0.5汤匙<br>
-            料酒 1汤匙 / 糖 少许 / 盐 适量 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 五花肉冷水下锅，加姜、葱、料酒煮至七八成熟，捞出晾凉切片。<br>
-            2. 热锅不放油，放入肉片煸炒出油脂。<br>
-            3. 加入姜片、豆瓣酱炒香。<br>
-            4. 加甜面酱、糖炒匀。<br>
-            5. 加入青蒜苗翻炒至断生即可。
-        </div>
-    </div>
+    function updateCartDisplay() {
+      cartCount.textContent = cartItems.length;
+      renderCartItems();
+      cartTotal.textContent = `总计: ${cartItems.length} 道菜`;
+    }
 
-    <!-- 西红柿炒鸡蛋 -->
-    <div class="dish">
-        <strong>西红柿炒鸡蛋</strong>
-        <img src="xhscjd.jpeg" alt="西红柿炒鸡蛋" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            西红柿 2个（约250g）<br>
-            鸡蛋 3个
-            <strong>调料类：</strong><br>
-            盐 适量 / 糖 少许 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 鸡蛋加盐打散，热锅加油炒至凝固盛出。<br>
-            2. 西红柿切块，热锅加油炒出沙。<br>
-            3. 倒入鸡蛋一起翻炒，加盐、少许糖调味即可。
-        </div>
-    </div>
-</div>
+    function renderCartItems() {
+      cartItemsContainer.innerHTML = '';
+      if (cartItems.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="empty-cart-msg">购物车还是空的哦，快去添加美味吧！</p>';
+        return;
+      }
+      const groupedItems = cartItems.reduce((acc, item) => {
+        acc[item.id] = (acc[item.id] || { ...item, quantity: 0 });
+        acc[item.id].quantity++;
+        return acc;
+      }, {});
 
-<!-- 周六 -->
-<div class="day">
-    <div class="day-title">周六：辣子鸡丁 + 手撕包菜</div>
+      Object.values(groupedItems).forEach(item => {
+        const cartItemDiv = document.createElement('div');
+        cartItemDiv.className = 'cart-item';
+        cartItemDiv.innerHTML = `
+          <span class="cart-item-name">${item.name} (x${item.quantity})</span>
+          <span class="cart-item-remove" data-id="${item.id}">移除</span>
+        `;
+        cartItemDiv.querySelector('.cart-item-remove').onclick = () => removeFromCart(item.id);
+        cartItemsContainer.appendChild(cartItemDiv);
+      });
+    }
 
-    <!-- 辣子鸡丁 -->
-    <div class="dish">
-        <strong>辣子鸡丁</strong>
-        <img src="lzjj.webp" alt="辣子鸡丁" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            鸡胸肉/鸡腿肉 250g<br>
-            干辣椒 8个 / 花椒 10粒 / 葱姜蒜 适量
-            <strong>调料类：</strong><br>
-            生抽 1.5汤匙 / 料酒 1汤匙 / 淀粉 1茶匙 / 盐 适量 / 糖 少许 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 鸡肉切丁，加生抽、料酒、淀粉腌制10分钟。<br>
-            2. 热锅加油，放入鸡丁炸至表面微黄捞出。<br>
-            3. 锅中留底油，放入干辣椒、花椒、葱姜蒜炒香。<br>
-            4. 加入鸡丁翻炒，调入盐、少许糖即可。
-        </div>
-    </div>
+    function toggleCartModal() {
+      cartModal.classList.toggle('active');
+      if (cartModal.classList.contains('active')) {
+        renderCartItems(); // 打开时刷新购物车内容
+      }
+    }
 
-    <!-- 手撕包菜 -->
-    <div class="dish">
-        <strong>手撕包菜</strong>
-        <img src="ssbc.jpeg" alt="手撕包菜" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            包菜 半个（约300g）<br>
-            干辣椒 3个 / 蒜末 3瓣
-            <strong>调料类：</strong><br>
-            盐 适量 / 生抽 少许 / 醋 少许 / 食用油 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 包菜手撕成小块，洗净沥干。<br>
-            2. 干辣椒剪段，蒜剁末。<br>
-            3. 热锅加油，先爆香干辣椒和蒜末。<br>
-            4. 放入包菜大火翻炒1~2分钟。<br>
-            5. 加盐、生抽、少许醋调味，炒匀即可。
-        </div>
-    </div>
-</div>
+    cartIcon.onclick = toggleCartModal;
+    closeCartModalBtn.onclick = toggleCartModal;
+    cartModal.onclick = function(e) {
+      if (e.target === cartModal) toggleCartModal();
+    };
 
-<!-- 周日 -->
-<div class="day">
-    <div class="day-title">周日：口蘑汤 + 凉拌手撕鸡</div>
+    categoryBtns.forEach(btn => {
+      btn.onclick = function() {
+        categoryBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        renderDishes(this.dataset.category);
+      };
+    });
 
-    <!-- 口蘑汤 -->
-    <div class="dish">
-        <strong>口蘑汤</strong>
-        <img src="kgt.png" alt="口蘑汤" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            口蘑 10朵（约200g）<br>
-            鸡蛋 1个（可选）<br>
-            清水 500ml
-            <strong>调料类：</strong><br>
-            盐 适量 / 鸡精 少许 / 葱花 少许 / 香油 少许
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 口蘑洗净切片，锅中加清水煮沸，放入口蘑煮3分钟。<br>
-            2. 打入鸡蛋搅匀（可选），加盐、鸡精调味，撒葱花，淋几滴香油即可。
-        </div>
-    </div>
+    // 初始化页面
+    renderDishes(); // 默认显示全部
+    updateCartDisplay(); // 初始化购物车显示
 
-    <!-- 凉拌手撕鸡 -->
-    <div class="dish">
-        <strong>凉拌手撕鸡</strong>
-        <img src="lbssj.png" alt="凉拌手撕鸡" class="image">
-        <div class="ingredients">
-            <strong>主料 & 配菜：</strong><br>
-            鸡胸肉/鸡腿肉 200g<br>
-            黄瓜丝 50g / 香菜 适量<br>
-            蒜末 3瓣 / 小米辣 1个 / 花生碎 适量
-            <strong>调料类：</strong><br>
-            生抽 1.5汤匙 / 醋 1汤匙 / 香油 半汤匙 / 辣椒油 1汤匙 / 糖 少许 / 盐 适量
-        </div>
-        <div class="steps">
-            <strong>做法：</strong><br>
-            1. 鸡肉冷水下锅，加姜片、料酒煮熟，放凉后撕成丝。<br>
-            2. 黄瓜切丝，香菜切段。<br>
-            3. 准备调料汁：蒜末、小米辣、生抽、醋、糖、香油、辣椒油混合。<br>
-            4. 鸡丝与黄瓜丝混合，淋上调料汁，撒花生碎和香菜即可。
-        </div>
-    </div>
-</div>
-
-<div class="footer">
-    &copy; 2025 用心做的每一餐，都是对你的喜欢 💖
-</div>
-
+  </script>
 </body>
 </html>
