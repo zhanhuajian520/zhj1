@@ -1,262 +1,658 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>一周爱心菜谱 | 给最爱的你</title>
-  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Roboto', 'ZCOOL KuaiLe', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(120deg, #fff5f9 0%, #ffe4ec 100%); margin: 0; padding-bottom: 5rem; /* 为购物车按钮留出空间 */ }
-    .header { text-align: center; padding: 2.5rem 1rem 1.5rem 1rem; background: linear-gradient(to right, #ffccdd, #ffe4ec); border-bottom: 2px solid #ffb6c1; position: relative; }
-    .header h1 { color: #e91e63; margin: 0; font-family: 'ZCOOL KuaiLe', cursive; font-size: 2.5rem; letter-spacing: 2px; }
-    .header p { color: #b96b8e; font-size: 1.1rem; margin-top: 0.5rem; }
-    .category-filters { text-align: center; margin: 1.5rem 0; }
-    .cat-btn { background: #fff; color: #e91e63; border: 1.5px solid #ffe4ec; border-radius: 8px; font-size: 1.08rem; padding: 0.5em 1.5em; margin: 0 0.5em 0.5em 0.5em; cursor: pointer; box-shadow: 0 2px 8px #ffe4ec33; transition: background .18s, color .18s; }
-    .cat-btn.active, .cat-btn:hover { background: #ffe4ec; color: #b96b8e; }
-    .dish-grid { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; margin: 2.5rem 0; padding: 0 1rem; }
-    .dish-card { width: 230px; background: #fff; border-radius: 18px; box-shadow: 0 8px 32px rgba(233,30,99,0.08); overflow: hidden; transition: transform .18s, box-shadow .18s; border: 1.5px solid #ffe4ec; display: flex; flex-direction: column; }
-    .dish-card:hover { transform: translateY(-6px) scale(1.04); box-shadow: 0 16px 40px rgba(233,30,99,0.18); }
-    .dish-card img { width: 100%; height: 150px; object-fit: cover; cursor: pointer; }
-    .dish-name { text-align: center; padding: 12px 8px 8px 8px; font-weight: bold; color: #e91e63; font-size: 1.18rem; letter-spacing: 1px; font-family: 'ZCOOL KuaiLe', cursive; cursor: pointer; flex-grow: 1; }
-    .add-to-cart-btn { background-color: #e91e63; color: white; border: none; padding: 10px; text-align: center; cursor: pointer; font-size: 0.9rem; transition: background-color 0.2s; margin: 0 12px 12px 12px; border-radius: 8px; }
-    .add-to-cart-btn:hover { background-color: #c2185b; }
-    .footer { text-align: center; padding: 1.5rem 0 1rem 0; font-size: 1rem; color: #b96b8e; letter-spacing: 1px; }
-    .modal { display: none; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(233,30,99,0.10); align-items: center; justify-content: center; z-index: 1000; }
-    .modal.active { display: flex; }
-    .modal-content { background: #fff; border-radius: 22px; max-width: 96vw; width: 500px; max-height: 92vh; overflow-y: auto; padding: 2.5rem 2rem 2rem 2rem; box-shadow: 0 12px 48px rgba(233,30,99,0.18); position: relative; border: 2px solid #ffe4ec; }
-    .modal-content img.dish-detail-img { width: 100%; max-width: 340px; display: block; margin: 0 auto 1.2rem auto; border-radius: 10px; box-shadow: 0 4px 16px #ffe4ec; }
-    .close-btn { position: absolute; right: 2rem; top: 1.5rem; font-size: 2.2rem; color: #e91e63; cursor: pointer; font-weight: bold; transition: color .2s; }
-    .close-btn:hover { color: #b96b8e; }
-    .modal-content h2 { font-family: 'ZCOOL KuaiLe', cursive; color: #e91e63; margin-bottom: 0.6rem; font-size: 2rem; letter-spacing: 1px; text-align: center; }
-    .modal-content .ingredients { font-size: 1.08rem; color: #b96b8e; margin-bottom: 1.1rem; background: #fff5f9; border-radius: 8px; padding: 0.7rem 1rem; border-left: 4px solid #e91e63; }
-    .modal-content ol { margin: 0; padding-left: 1.2em; }
-    .modal-content ol li { font-size: 1.13rem; color: #444; margin-bottom: 0.7em; line-height: 1.8; font-family: 'Roboto', 'ZCOOL KuaiLe', sans-serif; background: linear-gradient(90deg,#ffe4ec 0,#fff 100%); border-radius: 6px; padding: 0.4em 0.8em; box-shadow: 0 2px 8px #ffe4ec33; transition: background .2s; }
-    .modal-content ol li:hover { background: #ffe4ec; color: #e91e63; }
-    .cart-icon { position: fixed; bottom: 20px; right: 20px; background-color: #e91e63; color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1001; }
-    .cart-icon .cart-count { position: absolute; top: -5px; right: -5px; background-color: #c2185b; color: white; border-radius: 50%; font-size: 0.8rem; padding: 3px 6px; }
-    .cart-modal { display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 999; }
-    .cart-modal.active { display: flex; align-items: center; justify-content: center; }
-    .cart-modal-content { background: #fff; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-    .cart-modal-content h3 { text-align: center; color: #e91e63; font-family: 'ZCOOL KuaiLe', cursive; margin-top: 0; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
-    .cart-item:last-child { border-bottom: none; }
-    .cart-item-name { flex-grow: 1; color: #555; }
-    .cart-item-remove { color: #e91e63; cursor: pointer; margin-left: 10px; font-weight: bold; }
-    .cart-total { text-align: right; margin-top: 15px; font-weight: bold; color: #e91e63; }
-    .empty-cart-msg { text-align: center; color: #aaa; padding: 20px 0; }
-    @media (max-width: 700px) { 
-      .dish-card { width: calc(50% - 16px); } 
-      .modal-content { padding: 1.5rem 1rem; width: 90vw; }
-      .modal-content img.dish-detail-img { max-width: 80vw; }
-      .close-btn { right: 1rem; top: 1rem; }
-    }
-    @media (max-width: 480px) { 
-      .dish-card { width: calc(100% - 16px); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美味菜谱</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&display=swap');
+        
+        body {
+            font-family: 'ZCOOL QingKe HuangYou', cursive;
+            margin: 0;
+            padding: 0;
+            background-color: #fff5f5;
+            color: #5a3e36;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(255,192,203,0.3);
+            border-radius: 15px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #ffb6c1;
+        }
+
+        header h1 {
+            color: #ff6b88;
+            margin: 0;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 周筛选按钮样式 */
+        .week-filter {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .week-filter button {
+            background-color: #ffb6c1;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .week-filter button:hover, .week-filter button.active {
+            background-color: #ff6b88;
+            transform: translateY(-2px);
+        }
+
+        /* 购物车按钮美化 */
+        .add-to-cart {
+            background-color: #ffb6c1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .add-to-cart:hover {
+            background-color: #ff6b88;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .add-to-cart::before {
+            content: "🛒";
+        }
+
+        /* 菜品卡片样式 */
+        .dish-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .dish-card {
+            background-color: #fff;
+            border: 1px solid #ffd6e0;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(255,182,193,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dish-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255,182,193,0.3);
+        }
+
+        .dish-card img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 3px solid #ffebee;
+        }
+
+        .dish-card h3 {
+            margin: 10px 0;
+            font-size: 1.4em;
+            color: #ff6b88;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 8% auto;
+            padding: 30px;
+            border: none;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(255,182,193,0.4);
+            position: relative;
+        }
+
+        .close-btn {
+            color: #ffb6c1;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #ff6b88;
+        }
+
+        .modal-content h2 {
+            color: #ff6b88;
+            margin-top: 0;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .modal-content img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 5px solid #ffebee;
+        }
+
+        .modal-content p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+        }
+
+        /* 购物车样式 */
+        .cart-icon {
+            font-size: 1.8em;
+            cursor: pointer;
+            position: relative;
+            color: #ff6b88;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background-color: #ff6b88;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        .cart-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            right: 20px;
+            top: 80px;
+            width: 300px;
+            max-height: 70vh;
+            overflow-y: auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            padding: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #ffd6e0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-name {
+            flex: 1;
+            color: #5a3e36;
+        }
+
+        .cart-item-remove {
+            color: #ff6b88;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+		/* 在style标签中添加以下样式 */
+		.view-details {
+			background-color: #ffb6c1;
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 20px;
+			cursor: pointer;
+			font-size: 1em;
+			transition: all 0.3s ease;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+			margin-top: 10px;
+			display: inline-block;
+		}
+
+		.view-details:hover {
+			background-color: #ff6b88;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+		}
+
+		.view-details::before {
+			content: "🔍 ";
+		}
+		
+		/* 在style标签中添加按钮样式 */
+		.add-to-cart {
+			background-color: #ff9eb5;
+			color: white;
+			border: none;
+			padding: 10px 15px;
+			border-radius: 20px;
+			cursor: pointer;
+			font-size: 0.9em;
+			transition: all 0.3s ease;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+			margin-top: 5px;
+			margin-left: 10px;
+		}
+
+		.add-to-cart:hover {
+			background-color: #ff6b88;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+		}
+
+		.add-to-cart::before {
+			content: "🛒 ";
+		}
+		
+		/* 添加按钮组样式 */
+		.button-group {
+			display: flex;
+			justify-content: center;
+			gap: 10px;
+			margin-top: 10px;
+		}
+    </style>
 </head>
 <body>
-  <div class="header">
-    <h1>一周爱心菜谱</h1>
-    <p>每天为你做两顿饭，是我想表达的小浪漫💖</p>
-  </div>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🥗 一周爱心菜谱</h1>
+                <p style="color: #ff6b88; font-size: 1.2em; margin-top: 5px;">✨ 专属于婷婷宝宝 ✨</p>
+            </div>
+            <div class="cart-icon">🛒<span class="cart-count">0</span></div>
+        </header>
 
-  <div class="category-filters">
-    <button class="cat-btn active" data-category="全部">全部</button>
-    <button class="cat-btn" data-category="肉类">肉类</button>
-    <button class="cat-btn" data-category="菜类">菜类</button>
-  </div>
+        <!-- 周筛选按钮 -->
+        <div class="week-filter">
+            <button data-day="all" class="active">全部</button>
+            <button data-day="mon">周一</button>
+            <button data-day="tue">周二</button>
+            <button data-day="wed">周三</button>
+            <button data-day="thu">周四</button>
+            <button data-day="fri">周五</button>
+            <button data-day="sat">周六</button>
+            <button data-day="sun">周日</button>
+        </div>
 
-  <div class="dish-grid" id="dishGrid"></div>
-
-  <div class="footer">&copy; 2025 用心做的每一餐，都是对你的喜欢 💖</div>
-
-  <!-- 菜品详情 Modal -->
-  <div class="modal" id="dishDetailModal">
-    <div class="modal-content" id="dishDetailModalContent">
-      <!-- 动态填充 -->
+        <!-- 菜品展示区 -->
+        <div class="dish-grid">
+            <!-- 菜品卡片将通过JS动态生成 -->
+        </div>
     </div>
-  </div>
 
-  <!-- 购物车图标 -->
-  <div class="cart-icon" id="cartIcon">
-    🛒
-    <span class="cart-count" id="cartCount">0</span>
-  </div>
-
-  <!-- 购物车 Modal -->
-  <div class="cart-modal" id="cartModal">
-    <div class="cart-modal-content">
-      <span class="close-btn" id="closeCartModalBtn" style="top:10px; right:15px; font-size:1.8rem;">&times;</span>
-      <h3>我的购物车</h3>
-      <div id="cartItemsContainer">
-        <!-- 购物车项目将在这里 -->
-      </div>
-      <div class="cart-total" id="cartTotal">总计: 0 道菜</div>
+    <!-- 菜品详情模态框 -->
+    <div id="dishModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="modalDishName"></h2>
+            <img id="modalDishImage" src="" alt="">
+            <p><strong>主料配菜：</strong><span id="modalIngredients"></span></p>
+            <p><strong>调料：</strong><span id="modalSeasonings"></span></p>
+            <p><strong>做法：</strong><span id="modalSteps"></span></p>
+            <button class="add-to-cart" id="modalAddToCart">加入购物车</button>
+        </div>
     </div>
-  </div>
 
-  <script>
-    const dishes = [
-      { id: 1, name: '辣椒炒肉', img: 'ljcr.jpg', category: '肉类', ingredients: '猪里脊肉/五花肉 200g，青椒2个，大蒜3瓣，生姜2片，生抽1.5汤匙，老抽半汤匙，料酒1汤匙，盐适量，白糖少许，食用油适量', steps: ['猪肉洗净切薄片，加入生抽、料酒腌制10分钟。','青椒去籽切条，大蒜剁末。','热锅凉油，放入姜片、蒜末爆香。','放入肉片中火翻炒至变色后盛出备用。','锅中留底油，放入青椒快炒1分钟，加少许水焖半分钟。','倒回肉片一起翻炒均匀。','加老抽调色，加盐、少许白糖提鲜，翻炒几下即可出锅。'] },
-      { id: 2, name: '清炒空心菜', img: 'kxc.png', category: '菜类', ingredients: '空心菜 300g，蒜末适量，盐适量，食用油适量', steps: ['空心菜洗净沥干水分。','热锅加油，爆香蒜末。','放入空心菜快速翻炒，加盐调味即可。'] },
-      { id: 3, name: '豆芽炒肉', img: 'dycr.jpg', category: '肉类', ingredients: '猪瘦肉 200g，黄豆芽 200g，胡萝卜丝 50g（可选），蒜末2瓣，生抽1.5汤匙，料酒1汤匙，淀粉1茶匙，盐适量，食用油适量', steps: ['瘦肉切丝，加入生抽、料酒、淀粉拌匀腌制10分钟。','黄豆芽洗净，胡萝卜切细丝。','热锅加油，先炒肉丝至变色盛出备用。','另起锅放油，爆香蒜末，加入豆芽和胡萝卜丝快炒。','倒入炒好的肉丝翻炒均匀即可。'] },
-      { id: 4, name: '蒜蓉西兰花', img: 'syxlh.png', category: '菜类', ingredients: '西兰花 1颗（约300g），蒜末3瓣，蚝油1汤匙，盐适量，食用油适量', steps: ['西兰花切成小朵，焯水1分钟后捞出。','热锅加油，爆香蒜末。','放入西兰花翻炒，加蚝油调味即可。'] },
-      { id: 5, name: '酸汤肥牛', img: 'stfn.jpg', category: '肉类', ingredients: '肥牛卷300g，金针菇100g，豆芽100g，泡椒/野山椒5根，干辣椒5个，蒜末3瓣，葱花适量，姜片3片，番茄酱2汤匙，盐适量，白胡椒粉少许，鸡精少许', steps: ['所有食材准备好：泡椒剪段，金针菇撕开洗净，豆芽洗净。','锅中加水烧开，放入姜片、泡椒煮3分钟出味。','加入番茄酱搅拌均匀，继续煮2分钟。','先放入金针菇煮1分钟，再放豆芽煮1分钟。','分次放入肥牛卷，烫熟即可（不宜久煮）。'] },
-      { id: 6, name: '酸辣土豆丝', img: 'sltds.jpg', category: '菜类', ingredients: '土豆2个（约300g），干辣椒5个，蒜末2瓣，醋1汤匙，盐适量，食用油适量', steps: ['土豆去皮切丝，清水冲洗掉淀粉，控干水分。','干辣椒剪段，蒜剁末，热锅加油爆香。','放入土豆丝大火快炒1~2分钟。','加醋、盐调味即可。'] },
-      { id: 7, name: '白灼虾', img: 'bzx.jpeg', category: '肉类', ingredients: '鲜虾300g，姜片3片，葱段2根，蒜末2瓣，葱花少许，料酒1汤匙，生抽适量，醋适量，盐适量', steps: ['虾剪须、去虾线，清洗干净。','锅中加水，放入姜片、葱段、料酒，大火烧开。','放入虾煮约2分钟，虾身变红立即捞出。','搭配蘸料：蒜末+生抽+醋调汁，即可食用。'] },
-      { id: 8, name: '辛辣鸡蛋炒青椒', img: 'qjcjd.png', category: '菜类', ingredients: '鸡蛋3个，青椒2个（约150g），盐适量，食用油适量', steps: ['鸡蛋打散，加少许盐。','青椒洗净切丝。','热锅加油，倒入鸡蛋液炒至半凝固状态盛出。','再起锅加油，放入青椒炒至断生，倒入鸡蛋翻炒均匀，加盐调味，撒葱花即可。'] },
-      { id: 9, name: '回锅肉', img: 'hgr.jpg', category: '肉类', ingredients: '带皮五花肉300g，青蒜苗100g，姜片3片，葱段1根，郫县豆瓣酱1.5汤匙，甜面酱0.5汤匙，料酒1汤匙，糖少许，盐适量，食用油适量', steps: ['五花肉冷水下锅，加姜、葱、料酒煮至七八成熟，捞出晾凉切片。','热锅不放油，放入肉片煸炒出油脂。','加入姜片、豆瓣酱炒香。','加甜面酱、糖炒匀。','加入青蒜苗翻炒至断生即可。'] },
-      { id: 10, name: '西红柿炒鸡蛋', img: 'xhscjd.jpeg', category: '菜类', ingredients: '西红柿2个（约250g），鸡蛋3个，盐适量，糖少许，食用油适量', steps: ['鸡蛋加盐打散，热锅加油炒至凝固盛出。','西红柿切块，热锅加油炒出沙。','倒入鸡蛋一起翻炒，加盐、少许糖调味即可。'] },
-      { id: 11, name: '辣子鸡丁', img: 'lzjj.webp', category: '肉类', ingredients: '鸡胸肉/鸡腿肉250g，干辣椒8个，花椒10粒，葱姜蒜适量，生抽1.5汤匙，料酒1汤匙，淀粉1茶匙，盐适量，糖少许，食用油适量', steps: ['鸡肉切丁，加生抽、料酒、淀粉腌制10分钟。','热锅加油，放入鸡丁炸至表面微黄捞出。','锅中留底油，放入干辣椒、花椒、葱姜蒜炒香。','加入鸡丁翻炒，调入盐、少许糖即可。'] },
-      { id: 12, name: '手撕包菜', img: 'ssbc.jpeg', category: '菜类', ingredients: '包菜半个（约300g），干辣椒3个，蒜末3瓣，盐适量，生抽少许，醋少许，食用油适量', steps: ['包菜手撕成小块，洗净沥干。','干辣椒剪段，蒜剁末。','热锅加油，先爆香干辣椒和蒜末。','放入包菜大火翻炒1~2分钟。','加盐、生抽、少许醋调味，炒匀即可。'] },
-      { id: 13, name: '口蘑汤', img: 'kgt.png', category: '菜类', ingredients: '口蘑10朵（约200g），鸡蛋1个（可选），清水500ml，盐适量，鸡精少许，葱花少许，香油少许', steps: ['口蘑洗净切片，锅中加清水煮沸，放入口蘑煮3分钟。','打入鸡蛋搅匀（可选），加盐、鸡精调味，撒葱花，淋几滴香油即可。'] },
-      { id: 14, name: '凉拌手撕鸡', img: 'lbssj.png', category: '肉类', ingredients: '鸡胸肉/鸡腿肉200g，黄瓜丝50g，香菜适量，蒜末3瓣，小米辣1个，花生碎适量，生抽1.5汤匙，醋1汤匙，香油半汤匙，辣椒油1汤匙，糖少许，盐适量', steps: ['鸡肉冷水下锅，加姜片、料酒煮熟，放凉后撕成丝。','黄瓜切丝，香菜切段。','准备调料汁：蒜末、小米辣、生抽、醋、糖、香油、辣椒油混合。','鸡丝与黄瓜丝混合，淋上调料汁，撒花生碎和香菜即可。'] }
-    ];
+    <!-- 购物车模态框 -->
+    <div id="cartModal" class="cart-modal">
+        <h2 style="color: #ff6b88; margin-top: 0;">我的购物车</h2>
+        <div id="cartItems">
+            <!-- 购物车内容将通过JS动态生成 -->
+        </div>
+        <button class="add-to-cart" style="margin-top: 15px; width: 100%;" id="checkoutBtn">结算</button>
+    </div>
 
-    const dishGrid = document.getElementById('dishGrid');
-    const dishDetailModal = document.getElementById('dishDetailModal');
-    const dishDetailModalContent = document.getElementById('dishDetailModalContent');
-    const cartIcon = document.getElementById('cartIcon');
-    const cartCount = document.getElementById('cartCount');
-    const cartModal = document.getElementById('cartModal');
-    const cartItemsContainer = document.getElementById('cartItemsContainer');
-    const cartTotal = document.getElementById('cartTotal');
-    const closeCartModalBtn = document.getElementById('closeCartModalBtn');
-    const categoryBtns = document.querySelectorAll('.cat-btn');
+    <script>
+        // 菜品数据 - 14道菜品，已移除price字段
+        const dishes = [
+			  {
+				"id": 1,
+				"name": "辣椒炒肉",
+				"day": "mon",
+				"category": "meat",
+				"image": "ljcr.jpg",
+				"ingredients": "猪里脊/五花肉200g、青椒2个、大蒜6瓣、生姜10g",
+				"seasonings": "生抽1.5汤匙、老抽半汤匙、料酒1汤匙、白糖少许、盐适量",
+				"steps": "1. 猪肉切薄片腌制10分钟\n2. 青椒去籽切条\n3. 爆香姜蒜\n4. 炒肉片至变色\n5. 炒青椒后加肉片翻炒\n6. 调味出锅"
+			  },
+			  {
+				"id": 2,
+				"name": "清炒空心菜",
+				"day": "mon",
+				"category": "vegetable",
+				"image": "kxc.png",
+				"ingredients": "空心菜300g",
+				"seasonings": "大蒜、盐",
+				"steps": "1. 空心菜择段洗净\n2. 爆香蒜末\n3. 大火快炒空心菜\n4. 加盐调味"
+			  },
+			  {
+				"id": 3,
+				"name": "豆芽炒肉",
+				"day": "tue",
+				"category": "meat",
+				"image": "dycr.jpg",
+				"ingredients": "猪瘦肉200g、黄豆芽200g、胡萝卜1根",
+				"seasonings": "大蒜5瓣、生抽1.5汤匙、料酒1汤匙、淀粉1茶匙、盐适量",
+				"steps": "1. 瘦肉切丝腌制\n2. 黄豆芽洗净\n3. 炒肉丝备用\n4. 炒豆芽和胡萝卜\n5. 加肉丝翻炒\n6. 调味出锅"
+			  },
+			  {
+				"id": 4,
+				"name": "蒜蓉西兰花",
+				"day": "tue",
+				"category": "vegetable",
+				"image": "syxlh.png",
+				"ingredients": "西兰花1颗",
+				"seasonings": "大蒜、蚝油1汤匙、盐",
+				"steps": "1. 西兰花切朵焯水\n2. 爆香蒜蓉\n3. 炒西兰花\n4. 加蚝油和盐调味"
+			  },
+			  {
+				"id": 5,
+				"name": "酸汤肥牛",
+				"day": "wed",
+				"category": "meat",
+				"image": "stfn.jpg",
+				"ingredients": "肥牛卷300g、泡椒50g、金针菇100g、黄豆芽100g",
+				"seasonings": "番茄酱2汤匙、大蒜6瓣、生姜10g、葱花、盐、白胡椒粉、鸡精",
+				"steps": "1. 准备食材\n2. 煮泡椒和番茄酱\n3. 煮金针菇和豆芽\n4. 烫肥牛卷\n5. 调味撒葱花"
+			  },
+			  {
+				"id": 6,
+				"name": "酸辣土豆丝",
+				"day": "wed",
+				"category": "vegetable",
+				"image": "sltds.jpg",
+				"ingredients": "土豆2个",
+				"seasonings": "干辣椒5个、醋1汤匙、白糖少许、盐",
+				"steps": "1. 土豆切丝去淀粉\n2. 爆香干辣椒和蒜末\n3. 大火快炒土豆丝\n4. 加醋、盐、糖调味"
+			  },
+			  {
+				"id": 7,
+				"name": "白灼虾",
+				"day": "thu",
+				"category": "seafood",
+				"image": "bzx.jpeg",
+				"ingredients": "鲜虾300g",
+				"seasonings": "姜片3片、葱段2根、料酒1汤匙、生抽、醋、蒜末",
+				"steps": "1. 虾处理干净\n2. 水中加姜葱料酒煮开\n3. 煮虾2分钟\n4. 配蒜末生抽醋蘸料"
+			  },
+			  {
+				"id": 8,
+				"name": "辣椒炒鸡蛋",
+				"day": "thu",
+				"category": "egg",
+				"image": "qjcjd.png",
+				"ingredients": "鸡蛋3个、青椒2个",
+				"seasonings": "葱花、盐",
+				"steps": "1. 鸡蛋打散加盐\n2. 青椒切丝\n3. 炒鸡蛋至半凝固\n4. 炒青椒\n5. 混合翻炒调味"
+			  },
+			  {
+				"id": 9,
+				"name": "回锅肉",
+				"day": "fri",
+				"category": "meat",
+				"image": "hgr.jpg",
+				"ingredients": "带皮五花肉300g、青蒜苗100g",
+				"seasonings": "郫县豆瓣酱1.5汤匙、甜面酱0.5汤匙、姜片3片、葱段1根、料酒1汤匙、糖少许、盐",
+				"steps": "1. 五花肉煮熟切片\n2. 煸炒出油脂\n3. 加豆瓣酱和甜面酱\n4. 炒青蒜苗调味"
+			  },
+			  {
+				"id": 10,
+				"name": "西红柿炒鸡蛋",
+				"day": "fri",
+				"category": "egg",
+				"image": "xhscjd.jpeg",
+				"ingredients": "鸡蛋3个、西红柿2个",
+				"seasonings": "葱花、盐、糖",
+				"steps": "1. 炒鸡蛋\n2. 炒西红柿出沙\n3. 混合翻炒\n4. 调味撒葱花"
+			  },
+			  {
+				"id": 11,
+				"name": "辣子鸡丁",
+				"day": "sat",
+				"category": "meat",
+				"image": "lzjj.webp",
+				"ingredients": "鸡胸肉/鸡腿肉250g",
+				"seasonings": "干辣椒8个、花椒10粒、葱姜蒜、生抽1.5汤匙、料酒1汤匙、淀粉1茶匙、盐、糖",
+				"steps": "1. 鸡肉切丁腌制\n2. 炸鸡丁至微黄\n3. 炒香干辣椒花椒\n4. 加鸡丁翻炒调味"
+			  },
+			  {
+				"id": 12,
+				"name": "手撕包菜",
+				"day": "sat",
+				"category": "vegetable",
+				"image": "ssbc.jpeg",
+				"ingredients": "包菜半个",
+				"seasonings": "干辣椒、蒜末、生抽、醋、盐",
+				"steps": "1. 包菜手撕成块\n2. 爆香干辣椒蒜末\n3. 大火炒包菜\n4. 加生抽醋盐调味"
+			  },
+			  {
+				"id": 13,
+				"name": "口蘑汤",
+				"day": "sun",
+				"category": "soup",
+				"image": "kgt.png",
+				"ingredients": "口蘑10朵、鸡蛋1个",
+				"seasonings": "葱花、盐、鸡精、香油",
+				"steps": "1. 口蘑切片\n2. 煮口蘑汤\n3. 加蛋液(可选)\n4. 调味撒葱花"
+			  },
+			  {
+				"id": 14,
+				"name": "凉拌手撕鸡",
+				"day": "sun",
+				"category": "meat",
+				"image": "lbssj.png",
+				"ingredients": "鸡胸肉/鸡腿肉200g、黄瓜丝50g",
+				"seasonings": "香菜、蒜末3瓣、小米辣1个、生抽、醋、糖、香油",
+				"steps": "1. 鸡肉煮熟撕成丝\n2. 加黄瓜丝和调料\n3. 拌匀即可"
+			  }
+			]
 
-    let cartItems = [];
-    let currentCategory = '全部';
+        // 购物车数据
+        let cart = [];
 
-    function findDishById(id) {
-      return dishes.find(dish => dish.id === id);
-    }
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            renderDishes(dishes);
+            setupEventListeners();
+        });
 
-    function renderDishes(category = '全部') {
-      dishGrid.innerHTML = '';
-      currentCategory = category;
-      const filteredDishes = category === '全部' ? dishes : dishes.filter(d => d.category === category);
-      
-      filteredDishes.forEach(dish => {
-        const card = document.createElement('div');
-        card.className = 'dish-card';
-        card.innerHTML = `
-          <img src="./${dish.img}" alt="${dish.name}">
-          <div class="dish-name">${dish.name}</div>
-          <button class="add-to-cart-btn" data-id="${dish.id}">加入购物车</button>
-        `;
-        card.querySelector('img').onclick = () => showDishModal(dish);
-        card.querySelector('.dish-name').onclick = () => showDishModal(dish);
-        card.querySelector('.add-to-cart-btn').onclick = (e) => {
-          e.stopPropagation(); // 防止点击按钮时触发卡片详情
-          addToCart(dish.id);
-        };
-        dishGrid.appendChild(card);
-      });
-    }
+        // 渲染菜品
+        function renderDishes(dishesToRender) {
+            const dishGrid = document.querySelector('.dish-grid');
+            dishGrid.innerHTML = '';
 
-    function showDishModal(dish) {
-      dishDetailModalContent.innerHTML = `
-        <span class='close-btn' id='closeDishDetailModalBtn'>&times;</span>
-        <h2>${dish.name}</h2>
-        <img src='./${dish.img}' alt='${dish.name}' class='dish-detail-img'>
-        <div class='ingredients'><strong>配料：</strong>${dish.ingredients}</div>
-        <ol>${dish.steps.map(s => `<li>${s}</li>`).join('')}</ol>
-        <button class="add-to-cart-btn" data-id="${dish.id}" style="width:100%; margin-top:1rem; padding:12px; font-size:1rem;">加入购物车</button>
-      `;
-      dishDetailModal.classList.add('active');
-      document.getElementById('closeDishDetailModalBtn').onclick = hideDishDetailModal;
-      dishDetailModalContent.querySelector('.add-to-cart-btn').onclick = () => {
-        addToCart(dish.id);
-        // 可以选择在这里关闭详情弹窗或给出提示
-        // hideDishDetailModal(); 
-        alert(`${dish.name} 已加入购物车!`);
-      };
-    }
-
-    function hideDishDetailModal() {
-      dishDetailModal.classList.remove('active');
-    }
-
-    dishDetailModal.onclick = function(e) { 
-      if (e.target === dishDetailModal) hideDishDetailModal(); 
-    };
-
-    function addToCart(dishId) {
-      const dish = findDishById(dishId);
-      if (dish) {
-        // 简单起见，我们允许多次添加同一菜品
-        cartItems.push(dish);
-        updateCartDisplay();
-        alert(`${dish.name} 已加入购物车!`);
-      } else {
-        console.error('菜品未找到: ', dishId);
-      }
-    }
-
-    function removeFromCart(dishId) {
-        const indexToRemove = cartItems.findIndex(item => item.id === dishId);
-        if (indexToRemove > -1) {
-            cartItems.splice(indexToRemove, 1); // 只移除一个匹配项
-            updateCartDisplay();
+            dishesToRender.forEach(dish => {
+                const dishCard = document.createElement('div');
+                dishCard.className = 'dish-card';
+                dishCard.dataset.id = dish.id;
+                dishCard.dataset.category = dish.category;
+                dishCard.dataset.day = dish.day;
+                
+                dishCard.innerHTML = `
+                    <img src="${dish.image}" alt="${dish.name}">
+                    <h3>${dish.name}</h3>
+					<div class="button-group">
+						<button class="view-details" data-id="${dish.id}">查看详情</button>
+						<button class="add-to-cart" data-id="${dish.id}">加入购物车</button>
+					</div>
+                `;
+                
+                dishGrid.appendChild(dishCard);
+            });
         }
-    }
 
-    function updateCartDisplay() {
-      cartCount.textContent = cartItems.length;
-      renderCartItems();
-      cartTotal.textContent = `总计: ${cartItems.length} 道菜`;
-    }
+        // 设置事件监听
+        function setupEventListeners() {
+            // 详情按钮点击
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('view-details')) {
+                    const dishId = parseInt(e.target.dataset.id);
+                    const dish = dishes.find(d => d.id === dishId);
+                    showDishModal(dish);
+                }
+            });
 
-    function renderCartItems() {
-      cartItemsContainer.innerHTML = '';
-      if (cartItems.length === 0) {
-        cartItemsContainer.innerHTML = '<p class="empty-cart-msg">购物车还是空的哦，快去添加美味吧！</p>';
-        return;
-      }
-      const groupedItems = cartItems.reduce((acc, item) => {
-        acc[item.id] = (acc[item.id] || { ...item, quantity: 0 });
-        acc[item.id].quantity++;
-        return acc;
-      }, {});
+            // 关闭模态框
+            document.querySelector('.close-btn').addEventListener('click', function() {
+                document.getElementById('dishModal').style.display = 'none';
+            });
 
-      Object.values(groupedItems).forEach(item => {
-        const cartItemDiv = document.createElement('div');
-        cartItemDiv.className = 'cart-item';
-        cartItemDiv.innerHTML = `
-          <span class="cart-item-name">${item.name} (x${item.quantity})</span>
-          <span class="cart-item-remove" data-id="${item.id}">移除</span>
-        `;
-        cartItemDiv.querySelector('.cart-item-remove').onclick = () => removeFromCart(item.id);
-        cartItemsContainer.appendChild(cartItemDiv);
-      });
-    }
+            // 加入购物车
+            document.getElementById('modalAddToCart').addEventListener('click', function() {
+                const dishId = parseInt(document.getElementById('modalDishName').dataset.id);
+                const dish = dishes.find(d => d.id === dishId);
+                addToCart(dish);
+                document.getElementById('dishModal').style.display = 'none';
+            });
 
-    function toggleCartModal() {
-      cartModal.classList.toggle('active');
-      if (cartModal.classList.contains('active')) {
-        renderCartItems(); // 打开时刷新购物车内容
-      }
-    }
+            // 购物车图标点击
+            document.querySelector('.cart-icon').addEventListener('click', function() {
+                const cartModal = document.getElementById('cartModal');
+                cartModal.style.display = cartModal.style.display === 'block' ? 'none' : 'block';
+            });
 
-    cartIcon.onclick = toggleCartModal;
-    closeCartModalBtn.onclick = toggleCartModal;
-    cartModal.onclick = function(e) {
-      if (e.target === cartModal) toggleCartModal();
-    };
+            // 周筛选按钮
+            document.querySelectorAll('.week-filter button').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelector('.week-filter button.active').classList.remove('active');
+                    this.classList.add('active');
+                    
+                    const day = this.dataset.day;
+                    if (day === 'all') {
+                        renderDishes(dishes);
+                    } else {
+                        const filteredDishes = dishes.filter(dish => dish.day === day);
+                        renderDishes(filteredDishes);
+                    }
+                });
+            });
+        }
 
-    categoryBtns.forEach(btn => {
-      btn.onclick = function() {
-        categoryBtns.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        renderDishes(this.dataset.category);
-      };
-    });
+        // 显示菜品详情模态框
+        function showDishModal(dish) {
+            const modal = document.getElementById('dishModal');
+            document.getElementById('modalDishName').textContent = dish.name;
+            document.getElementById('modalDishName').dataset.id = dish.id;
+            document.getElementById('modalDishImage').src = dish.image;
+            document.getElementById('modalIngredients').textContent = dish.ingredients;
+            document.getElementById('modalSeasonings').textContent = dish.seasonings;
+            document.getElementById('modalSteps').textContent = dish.steps;
+            modal.style.display = 'block';
+        }
 
-    // 初始化页面
-    renderDishes(); // 默认显示全部
-    updateCartDisplay(); // 初始化购物车显示
+        // 添加到购物车
+        function addToCart(dish) {
+            cart.push(dish);
+            updateCartCount();
+            updateCartItems();
+        }
 
-  </script>
+        // 更新购物车数量
+        function updateCartCount() {
+            document.querySelector('.cart-count').textContent = cart.length;
+        }
+
+        // 更新购物车内容
+        function updateCartItems() {
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+            
+            cart.forEach((dish, index) => {
+                const item = document.createElement('div');
+                item.className = 'cart-item';
+                item.innerHTML = `
+                    <span class="cart-item-name">${dish.name}</span>
+                    <span class="cart-item-remove" data-index="${index}">✕</span>
+                `;
+                cartItems.appendChild(item);
+            });
+
+            // 移除购物车项
+            document.querySelectorAll('.cart-item-remove').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    cart.splice(index, 1);
+                    updateCartCount();
+                    updateCartItems();
+                });
+            });
+        }
+
+        // 结算按钮
+        document.getElementById('checkoutBtn').addEventListener('click', function() {
+            alert(`已成功结算 ${cart.length} 道菜品！`);
+            cart = [];
+            updateCartCount();
+            updateCartItems();
+            document.getElementById('cartModal').style.display = 'none';
+        });
+
+
+		/* 添加点击事件处理 */
+		document.addEventListener('click', function(e) {
+			if (e.target.classList.contains('add-to-cart')) {
+				const dishId = parseInt(e.target.dataset.id);
+				const dish = dishes.find(d => d.id === dishId);
+				addToCart(dish);
+				alert(`${dish.name} 已加入购物车！`);
+			}
+		});
+    </script>
 </body>
 </html>
