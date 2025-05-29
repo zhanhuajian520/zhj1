@@ -358,157 +358,30 @@
         <button class="add-to-cart" style="margin-top: 15px; width: 100%;" id="checkoutBtn">结算</button>
     </div>
 
+    <script src="dishes.js"></script>
     <script>
         // 菜品数据 - 14道菜品，已移除price字段
-        const dishes = [
-			  {
-				"id": 1,
-				"name": "辣椒炒肉",
-				"day": "mon",
-				"category": "meat",
-				"image": "ljcr.jpg",
-				"ingredients": "猪里脊/五花肉200g、青椒2个、大蒜6瓣、生姜10g",
-				"seasonings": "生抽1.5汤匙、老抽半汤匙、料酒1汤匙、白糖少许、盐适量",
-				"steps": "1. 猪肉切薄片腌制10分钟\n2. 青椒去籽切条\n3. 爆香姜蒜\n4. 炒肉片至变色\n5. 炒青椒后加肉片翻炒\n6. 调味出锅"
-			  },
-			  {
-				"id": 2,
-				"name": "清炒空心菜",
-				"day": "mon",
-				"category": "vegetable",
-				"image": "kxc.png",
-				"ingredients": "空心菜300g",
-				"seasonings": "大蒜、盐",
-				"steps": "1. 空心菜择段洗净\n2. 爆香蒜末\n3. 大火快炒空心菜\n4. 加盐调味"
-			  },
-			  {
-				"id": 3,
-				"name": "豆芽炒肉",
-				"day": "tue",
-				"category": "meat",
-				"image": "dycr.jpg",
-				"ingredients": "猪瘦肉200g、黄豆芽200g、胡萝卜1根",
-				"seasonings": "大蒜5瓣、生抽1.5汤匙、料酒1汤匙、淀粉1茶匙、盐适量",
-				"steps": "1. 瘦肉切丝腌制\n2. 黄豆芽洗净\n3. 炒肉丝备用\n4. 炒豆芽和胡萝卜\n5. 加肉丝翻炒\n6. 调味出锅"
-			  },
-			  {
-				"id": 4,
-				"name": "蒜蓉西兰花",
-				"day": "tue",
-				"category": "vegetable",
-				"image": "syxlh.png",
-				"ingredients": "西兰花1颗",
-				"seasonings": "大蒜、蚝油1汤匙、盐",
-				"steps": "1. 西兰花切朵焯水\n2. 爆香蒜蓉\n3. 炒西兰花\n4. 加蚝油和盐调味"
-			  },
-			  {
-				"id": 5,
-				"name": "酸汤肥牛",
-				"day": "wed",
-				"category": "meat",
-				"image": "stfn.jpg",
-				"ingredients": "肥牛卷300g、泡椒50g、金针菇100g、黄豆芽100g",
-				"seasonings": "番茄酱2汤匙、大蒜6瓣、生姜10g、葱花、盐、白胡椒粉、鸡精",
-				"steps": "1. 准备食材\n2. 煮泡椒和番茄酱\n3. 煮金针菇和豆芽\n4. 烫肥牛卷\n5. 调味撒葱花"
-			  },
-			  {
-				"id": 6,
-				"name": "酸辣土豆丝",
-				"day": "wed",
-				"category": "vegetable",
-				"image": "sltds.jpg",
-				"ingredients": "土豆2个",
-				"seasonings": "干辣椒5个、醋1汤匙、白糖少许、盐",
-				"steps": "1. 土豆切丝去淀粉\n2. 爆香干辣椒和蒜末\n3. 大火快炒土豆丝\n4. 加醋、盐、糖调味"
-			  },
-			  {
-				"id": 7,
-				"name": "白灼虾",
-				"day": "thu",
-				"category": "seafood",
-				"image": "bzx.jpeg",
-				"ingredients": "鲜虾300g",
-				"seasonings": "姜片3片、葱段2根、料酒1汤匙、生抽、醋、蒜末",
-				"steps": "1. 虾处理干净\n2. 水中加姜葱料酒煮开\n3. 煮虾2分钟\n4. 配蒜末生抽醋蘸料"
-			  },
-			  {
-				"id": 8,
-				"name": "辣椒炒鸡蛋",
-				"day": "thu",
-				"category": "egg",
-				"image": "qjcjd.png",
-				"ingredients": "鸡蛋3个、青椒2个",
-				"seasonings": "葱花、盐",
-				"steps": "1. 鸡蛋打散加盐\n2. 青椒切丝\n3. 炒鸡蛋至半凝固\n4. 炒青椒\n5. 混合翻炒调味"
-			  },
-			  {
-				"id": 9,
-				"name": "回锅肉",
-				"day": "fri",
-				"category": "meat",
-				"image": "hgr.jpg",
-				"ingredients": "带皮五花肉300g、青蒜苗100g",
-				"seasonings": "郫县豆瓣酱1.5汤匙、甜面酱0.5汤匙、姜片3片、葱段1根、料酒1汤匙、糖少许、盐",
-				"steps": "1. 五花肉煮熟切片\n2. 煸炒出油脂\n3. 加豆瓣酱和甜面酱\n4. 炒青蒜苗调味"
-			  },
-			  {
-				"id": 10,
-				"name": "西红柿炒鸡蛋",
-				"day": "fri",
-				"category": "egg",
-				"image": "xhscjd.jpeg",
-				"ingredients": "鸡蛋3个、西红柿2个",
-				"seasonings": "葱花、盐、糖",
-				"steps": "1. 炒鸡蛋\n2. 炒西红柿出沙\n3. 混合翻炒\n4. 调味撒葱花"
-			  },
-			  {
-				"id": 11,
-				"name": "辣子鸡丁",
-				"day": "sat",
-				"category": "meat",
-				"image": "lzjj.webp",
-				"ingredients": "鸡胸肉/鸡腿肉250g",
-				"seasonings": "干辣椒8个、花椒10粒、葱姜蒜、生抽1.5汤匙、料酒1汤匙、淀粉1茶匙、盐、糖",
-				"steps": "1. 鸡肉切丁腌制\n2. 炸鸡丁至微黄\n3. 炒香干辣椒花椒\n4. 加鸡丁翻炒调味"
-			  },
-			  {
-				"id": 12,
-				"name": "手撕包菜",
-				"day": "sat",
-				"category": "vegetable",
-				"image": "ssbc.jpeg",
-				"ingredients": "包菜半个",
-				"seasonings": "干辣椒、蒜末、生抽、醋、盐",
-				"steps": "1. 包菜手撕成块\n2. 爆香干辣椒蒜末\n3. 大火炒包菜\n4. 加生抽醋盐调味"
-			  },
-			  {
-				"id": 13,
-				"name": "口蘑汤",
-				"day": "sun",
-				"category": "soup",
-				"image": "kgt.png",
-				"ingredients": "口蘑10朵、鸡蛋1个",
-				"seasonings": "葱花、盐、鸡精、香油",
-				"steps": "1. 口蘑切片\n2. 煮口蘑汤\n3. 加蛋液(可选)\n4. 调味撒葱花"
-			  },
-			  {
-				"id": 14,
-				"name": "凉拌手撕鸡",
-				"day": "sun",
-				"category": "meat",
-				"image": "lbssj.png",
-				"ingredients": "鸡胸肉/鸡腿肉200g、黄瓜丝50g",
-				"seasonings": "香菜、蒜末3瓣、小米辣1个、生抽、醋、糖、香油",
-				"steps": "1. 鸡肉煮熟撕成丝\n2. 加黄瓜丝和调料\n3. 拌匀即可"
-			  }
-			]
+        var dishes = [];
+
+        // 动态读取dishes.txt文件
+        // 1. 使用fetch API加载文件
+        // window.addEventListener('DOMContentLoaded', () => {
+        //     const script = document.createElement('script');
+        //     script.src = 'dishes.js';
+        //     script.onload = function() {
+        //         console.log('数据加载成功:', dishesData);
+        //         // 使用dishesData变量
+        //         dishes = dishesData;
+        //     };
+        //     document.head.appendChild(script);
+        // });
 
         // 购物车数据
         let cart = [];
 
         // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {
-            renderDishes(dishes);
+            renderDishes(dishesData);
             setupEventListeners();
         });
 
@@ -543,7 +416,7 @@
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('view-details')) {
                     const dishId = parseInt(e.target.dataset.id);
-                    const dish = dishes.find(d => d.id === dishId);
+                    const dish = dishesData.find(d => d.id === dishId);
                     showDishModal(dish);
                 }
             });
@@ -556,7 +429,7 @@
             // 加入购物车
             document.getElementById('modalAddToCart').addEventListener('click', function() {
                 const dishId = parseInt(document.getElementById('modalDishName').dataset.id);
-                const dish = dishes.find(d => d.id === dishId);
+                const dish = dishesData.find(d => d.id === dishId);
                 addToCart(dish);
                 document.getElementById('dishModal').style.display = 'none';
             });
@@ -575,9 +448,9 @@
                     
                     const day = this.dataset.day;
                     if (day === 'all') {
-                        renderDishes(dishes);
+                        renderDishes(dishesData);
                     } else {
-                        const filteredDishes = dishes.filter(dish => dish.day === day);
+                        const filteredDishes = dishesData.filter(dish => dish.day === day);
                         renderDishes(filteredDishes);
                     }
                 });
@@ -648,7 +521,7 @@
 		document.addEventListener('click', function(e) {
 			if (e.target.classList.contains('add-to-cart')) {
 				const dishId = parseInt(e.target.dataset.id);
-				const dish = dishes.find(d => d.id === dishId);
+				const dish = dishesData.find(d => d.id === dishId);
 				addToCart(dish);
 				alert(`${dish.name} 已加入购物车！`);
 			}
