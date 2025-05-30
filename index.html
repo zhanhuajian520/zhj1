@@ -306,6 +306,109 @@
 			gap: 10px;
 			margin-top: 10px;
 		}
+
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .category-filter button, 
+        #random-recommend {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-filter button.active, 
+        #random-recommend.active {
+            background-color: #ff6b88;
+            color: white;
+        }
+
+        #random-recommend {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #random-recommend:hover {
+            background-color: #45a049;
+        }
+
+        .week-filter {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .day-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        button:hover, button.active {
+            background: #ff6b88;
+            color: white;
+            border-color: #ff6b88;
+        }
+
+        .icon {
+            font-size: 14px;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 5px;
+            z-index: 1;
+            min-width: 100px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .day-buttons button {
+            width: 32px;
+            height: 32px;
+            justify-content: center;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
@@ -320,14 +423,40 @@
 
         <!-- 周筛选按钮 -->
         <div class="week-filter">
-            <button data-day="all" class="active">全部</button>
-            <button data-day="mon">周一</button>
-            <button data-day="tue">周二</button>
-            <button data-day="wed">周三</button>
-            <button data-day="thu">周四</button>
-            <button data-day="fri">周五</button>
-            <button data-day="sat">周六</button>
-            <button data-day="sun">周日</button>
+            <div class="filter-group">
+                <button data-day="all" class="active">
+                    <span class="icon">📅</span>
+                    <span class="text">全部</span>
+                </button>
+                <div class="dropdown">
+                    <button class="dropdown-btn">
+                        <span class="icon">🍽️</span>
+                        <span class="text">分类</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <div class="dropdown-content">
+                        <button data-category="meat">
+                            <span class="icon">🍖</span> 荤菜
+                        </button>
+                        <button data-category="vegetable">
+                            <span class="icon">🥗</span> 素菜
+                        </button>
+                    </div>
+                </div>
+                <button id="random-recommend">
+                    <span class="icon">🎲</span>
+                    <span class="text">推荐</span>
+                </button>
+            </div>
+            <div class="day-buttons">
+                <button data-day="mon">一</button>
+                <button data-day="tue">二</button>
+                <button data-day="wed">三</button>
+                <button data-day="thu">四</button>
+                <button data-day="fri">五</button>
+                <button data-day="sat">六</button>
+                <button data-day="sun">日</button>
+            </div>
         </div>
 
         <!-- 菜品展示区 -->
@@ -526,6 +655,30 @@
 				alert(`${dish.name} 已加入购物车！`);
 			}
 		});
+
+        // 随机推荐函数
+        function getRandomRecommendation() {
+            const meatDishes = dishesData.filter(dish => dish.category === 'meat');
+            const vegDishes = dishesData.filter(dish => dish.category === 'vegetable');
+            
+            const randomMeat = meatDishes[Math.floor(Math.random() * meatDishes.length)];
+            const randomVeg = vegDishes[Math.floor(Math.random() * vegDishes.length)];
+            
+            return [randomMeat, randomVeg];
+        }
+
+        // 添加随机推荐按钮事件
+        document.getElementById('random-recommend').addEventListener('click', function() {
+            const recommendedDishes = getRandomRecommendation();
+            renderDishes(recommendedDishes);
+            
+            // 高亮显示当前推荐
+            document.querySelectorAll('.category-filter button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+
     </script>
 </body>
 </html>
