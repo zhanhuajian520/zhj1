@@ -441,6 +441,21 @@
                         <button data-category="vegetable">
                             <span class="icon">🥗</span> 素菜
                         </button>
+                        <button data-category="seafood">
+                            <span class="icon">🦐</span> 海鲜
+                        </button>
+                        <button data-category="egg">
+                            <span class="icon">🥚</span> 蛋类
+                        </button>
+                        <button data-category="noodle">
+                            <span class="icon">🍜</span> 面食
+                        </button>
+                        <button data-category="soup">
+                            <span class="icon">🍲</span> 汤类
+                        </button>
+                        <button data-category="tofu">
+                            <span class="icon">🧈</span> 豆制品
+                        </button>
                     </div>
                 </div>
                 <button id="random-recommend">
@@ -584,6 +599,33 @@
                     }
                 });
             });
+
+            document.querySelectorAll('.dropdown-content button').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelector('.dropdown-content button.active').classList.remove('active');
+                    this.classList.add('active');
+                    
+                    const category = this.dataset.category;
+                    if (category === 'all') {
+                        renderDishes(dishesData);
+                    } else {
+                        const filteredDishes = dishesData.filter(dish => dish.category === category);
+                        renderDishes(filteredDishes);
+                    }
+                });
+            });
+
+            // 添加随机推荐按钮事件
+            document.getElementById('random-recommend').addEventListener('click', function() {
+                const recommendedDishes = getRandomRecommendation();
+                renderDishes(recommendedDishes);
+                
+                // 高亮显示当前推荐
+                document.querySelectorAll('.category-filter button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
         }
 
         // 显示菜品详情模态框
@@ -667,17 +709,7 @@
             return [randomMeat, randomVeg];
         }
 
-        // 添加随机推荐按钮事件
-        document.getElementById('random-recommend').addEventListener('click', function() {
-            const recommendedDishes = getRandomRecommendation();
-            renderDishes(recommendedDishes);
-            
-            // 高亮显示当前推荐
-            document.querySelectorAll('.category-filter button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            this.classList.add('active');
-        });
+        
 
     </script>
 </body>
